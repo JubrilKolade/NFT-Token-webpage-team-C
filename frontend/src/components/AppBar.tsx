@@ -1,4 +1,4 @@
-import { FC } from "react";
+import { FC, useState } from "react";
 import Link from "next/link";
 
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
@@ -6,32 +6,45 @@ import { useAutoConnect } from "../contexts/AutoConnectProvider";
 
 export const AppBar: FC = (props) => {
   const { autoConnect, setAutoConnect } = useAutoConnect();
+  const [showToken, setShowToken] = useState(false);
+
+  const handleClick = () => {
+    setShowToken(!showToken)
+  }
 
   return (
     <div>
       {/* NavBar / Header */}
       <div className="flex items-center justify-between p-2 shadow-lg bg-black text-neutral-content">
-          <div className="text-center">
-            <h1 className="font-bold text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]">
-              TokenForge
-            </h1>
-          </div>
+        <div className="text-center">
+          <h1 className="font-bold text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]">
+            TokenForge
+          </h1>
+        </div>
 
         {/* Wallet & Settings */}
-        <div className="flex gap-2 items-center text-slate-300 text-xl max-lg:hidden font-semibold text-center">
-          <Link href="/">
-            <a className="p-2 hover:border border-white">Token <br /> Creator</a>
-          </Link>
-          <Link href="/update">
-            <a className="p-2 hover:border border-white">Update <br /> Metadata</a>
-          </Link>
-          <Link href="/uploader">
-            <a className="p-2 hover:border border-white">Upload <br /> Metadata</a>
-          </Link>
-          <Link href="/metadata">
-            <a className="p-2 hover:border border-white">Token <br /> Metadata</a>
-          </Link>
+        <div className="relative flex gap-10 items-center text-slate-300 text-xl max-lg:hidden font-semibold text-center">
+          <button onClick={handleClick}>Token Creator</button>
+          <div className={`absolute top-10 bg-black z-50 w-80 flex flex-col gap-2 ${showToken ? "block" : "hidden"}`}>
+            <Link href="/update">
+              <a className="p-2 hover:border border-white">
+                Update Metadata
+              </a>
+            </Link>
+            <Link href="/uploader">
+              <a className="p-2 hover:border border-white">
+                Upload Metadata
+              </a>
+            </Link>
+            <Link href="/metadata">
+              <a className="p-2 hover:border border-white">
+                Token Metadata
+              </a>
+            </Link>
+          </div>
+          <Link href={"/trade"} >Trade</Link>
         </div>
+
         <div className="flex">
           <div className="dropdown">
             <div tabIndex={0} className="btn btn-square btn-ghost text-right">
