@@ -38,7 +38,7 @@ export const HomeView: FC = ({ }) => {
         </h1>      
         <div className="text-center">
           <RequestAirdrop  my-2/>
-          {wallet && <p>SOL Balance: {(balance || 0).toLocaleString()}</p>}
+          {wallet && <p className='pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10'>SOL Balance: {(balance || 0).toLocaleString()}</p>}
           <CreateToken />
         </div>
       </div>
