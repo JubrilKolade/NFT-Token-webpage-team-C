@@ -95,16 +95,21 @@ export const UploadMetadata: FC = ({}) => {
 
   const handleImageChange = (event) => {
     const file = event.target.files[0];
-    let reader = new FileReader();
+    setImageFile(file)
     if (file) {
-      setSelectedImage(file.name);
-      reader.onload = function () {
-        if (reader.result) {
-          setImageFile(Buffer.from(reader.result as ArrayBuffer));
-        }
-      };
-      reader.readAsArrayBuffer(file);
+        setSelectedImage(file.name);
     }
+    // return file;
+    // let reader = new FileReader();
+    // if (file) {
+    //   setSelectedImage(file.name);
+    //   reader.onload = function () {
+    //     if (reader.result) {
+    //       setImageFile(Buffer.from(reader.result as ArrayBuffer));
+    //     }
+    //   };
+    //   reader.readAsArrayBuffer(file);
+    // }
   };
 
   const handleMetadataChange = (event) => {
@@ -122,27 +127,83 @@ export const UploadMetadata: FC = ({}) => {
   };
 
   const uploadImage = async () => {
-    const price = await bundlr.utils.getPrice('solana', imageFile.length);
-    let amount = bundlr.utils.unitConverter(price);
-    amount = amount.toNumber();
+    const url = `https://api.pinata.cloud/pinning/pinFileToIPFS`;
 
-    const loadedBalance = await bundlr.getLoadedBalance();
-    let balance = bundlr.utils.unitConverter(loadedBalance.toNumber());
-    balance = balance.toNumber();
+    // Create a new FormData object
+    let data = new FormData();
+    data.append('file', imageFile);
 
-    if (balance < amount) {
-      await bundlr.fund(LAMPORTS_PER_SOL);
-    }
+    const metadata = JSON.stringify({
+        name: 'testname',
+        keyvalues: {
+            exampleKey: 'exampleValue'
+        }
+    });
+    data.append('pinataMetadata', metadata);
 
-    const imageResult = await bundlr.uploader.upload(imageFile, [
-      { name: 'Content-Type', value: 'image/png' },
-    ]);
+    const pinataOptions = JSON.stringify({
+        cidVersion: 0,
+        customPinPolicy: {
+            regions: [
+                {
+                    id: 'FRA1',
+                    desiredReplicationCount: 1
+                },
+                {
+                    id: 'NYC1',
+                    desiredReplicationCount: 2
+                }
+            ]
+        }
+    });
+    data.append('pinataOptions', pinataOptions);
 
-    const arweaveImageUrl = `https://arweave.net/${imageResult.data.id}?ext=png`;
+    fetch(url, {
+        method: 'POST',
+        body: data,
+        headers: {
+            pinata_api_key: "b5d87e7b0b07bb19cdc7",
+            pinata_secret_api_key: "c3f5b271b9d21e6b715ad89f16e2fe09c7828499aa612cc5fadf04fd57c5e9b7",
+        }
+    })
+    .then(response => response.json())
+    .then(responseData => {
+        console.log("image uploaded", responseData.IpfsHash);
+        const arweaveImageUrl = `https://gateway.pinata.cloud/ipfs/${responseData.IpfsHash}`;
 
-    if (arweaveImageUrl) {
-      setImageUrl(arweaveImageUrl);
-    }
+        if (arweaveImageUrl) {
+          setImageUrl(arweaveImageUrl);
+        }
+        // return {
+        //     success: true,
+        //     pinataURL: "https://gateway.pinata.cloud/ipfs/" + responseData.IpfsHash
+        // };
+    })
+    .catch(error => {
+        console.log(error);
+        return {
+            success: false,
+            message: error.message,
+        };
+    });
+
+    // const price = await bundlr.utils.getPrice('solana', imageFile.length);
+    // let amount = bundlr.utils.unitConverter(price);
+    // amount = amount.toNumber();
+
+    // const loadedBalance = await bundlr.getLoadedBalance();
+    // let balance = bundlr.utils.unitConverter(loadedBalance.toNumber());
+    // balance = balance.toNumber();
+
+    // if (balance < amount) {
+    //   await bundlr.fund(LAMPORTS_PER_SOL);
+    // }
+
+    // const imageResult = await bundlr.uploader.upload(imageFile, [
+    //   { name: 'Content-Type', value: 'image/png' },
+    // ]);
+
+    
   };
 
   const uploadMetadata = async () => {
@@ -322,7 +383,8 @@ export const UploadMetadata: FC = ({}) => {
                 <button
                   className='px-8 m-2 btn animate-pulse bg-gradient-to-r from-[#9945FF] to-[#14F195] hover:from-pink-500 hover:to-yellow-500 ...'
                   onClick={async () => uploadImage()}
-                  disabled={!bundlr}>
+                  // disabled={!bundlr}
+                  >
                   Upload Image
                 </button>
               )}
