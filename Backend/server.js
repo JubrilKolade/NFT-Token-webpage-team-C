@@ -41,6 +41,7 @@ app.get('/', (req, res) => {
 
 // routes
 require('./app/routes/auth.routes')(app)
+require('./app/routes/token.routes')(app)
 
 const PORT = process.env.PORT || 8080
 const APP_URL = process.env.APP_URL || 'http://localhost'
