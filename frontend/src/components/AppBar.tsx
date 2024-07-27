@@ -16,11 +16,14 @@ export const AppBar: FC = (props) => {
     <div>
       {/* NavBar / Header */}
       <div className="flex items-center justify-between p-2 shadow-lg bg-black text-neutral-content">
-        <div className="text-center">
-          <h1 className="font-bold text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]">
-            TokenForge
-          </h1>
-        </div>
+
+          <div className="text-center cursor-pointer">
+            <Link href={"/"}>
+              <h1 className="font-bold text-3xl md:text-4xl text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]">
+                TokenForge
+              </h1>
+            </Link>
+          </div>
 
         {/* Wallet & Settings */}
         <div className="relative flex gap-10 items-center text-slate-300 text-xl max-lg:hidden font-semibold text-center">
@@ -95,3 +98,5 @@ export const AppBar: FC = (props) => {
     </div>
   );
 };
+
+
