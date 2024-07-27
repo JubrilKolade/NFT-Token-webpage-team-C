@@ -1,7 +1,7 @@
 const express = require('express')
 const cors = require('cors')
 const dotenv = require('dotenv')
-// const db = require('./app/models')
+const db = require('./app/models')
 const nunjucks = require('nunjucks')
 
 const app = express()
@@ -23,9 +23,25 @@ nunjucks.configure('views', {
 
 const APP_DEBUG = process.env.APP_DEBUG || 'true'
 
+db.sequelize
+    .sync(APP_DEBUG.toLowerCase() == 'true' ? { force: true } : {})
+    .then(() => {
+        if (APP_DEBUG.toLowerCase() == 'true') {
+            // seedDatabase()
+        }
+        console.log('Drop and Resync Db')
+    })
+    .catch((err) => {
+        console.log('Failed to sync db: ' + err.message)
+    })
+
 app.get('/', (req, res) => {
-    res.json({ message: 'Welcome to GoNow!!' })
+    res.json({ message: 'Welcome to Pumpfun!!' })
 })
+
+// routes
+require('./app/routes/auth.routes')(app)
+require('./app/routes/token.routes')(app)
 
 const PORT = process.env.PORT || 8080
 const APP_URL = process.env.APP_URL || 'http://localhost'
