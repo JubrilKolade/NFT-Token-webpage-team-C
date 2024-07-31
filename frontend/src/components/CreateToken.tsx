@@ -1,8 +1,13 @@
+// 
 import { FC, useCallback, useState } from 'react';
 import { useConnection, useWallet } from '@solana/wallet-adapter-react';
-import { Keypair, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
+import { Keypair, LAMPORTS_PER_SOL, PublicKey, SystemProgram, Transaction } from '@solana/web3.js';
 import { MINT_SIZE, TOKEN_PROGRAM_ID, createInitializeMintInstruction, getMinimumBalanceForRentExemptMint, getAssociatedTokenAddress, createAssociatedTokenAccountInstruction, createMintToInstruction } from '@solana/spl-token';
 import { createCreateMetadataAccountV3Instruction, PROGRAM_ID } from '@metaplex-foundation/mpl-token-metadata';
+
+//payment for creating token on the platform
+const FEE_AMOUNT_SOL = 0.02; // Fee amount in SOL
+const FEE_PAYER_PUBLIC_KEY = new PublicKey('2bSN5fu475HxTEhfFpYRAnCMDE2fBo4RNoiv7zP1Lx2b'); // Replace with your wallet address
 
 export const CreateToken: FC = () => {
   const { connection } = useConnection();
@@ -17,6 +22,13 @@ export const CreateToken: FC = () => {
       const lamports = await getMinimumBalanceForRentExemptMint(connection);
       const mintKeypair = Keypair.generate();
       const tokenATA = await getAssociatedTokenAddress(mintKeypair.publicKey, publicKey);
+      const feeLamports = FEE_AMOUNT_SOL * LAMPORTS_PER_SOL; // Convert SOL to lamports
+
+      const feeTransferInstruction = SystemProgram.transfer({
+        fromPubkey: publicKey,
+        toPubkey: FEE_PAYER_PUBLIC_KEY,
+        lamports: feeLamports,
+      });
 
       const createMetadataInstruction = createCreateMetadataAccountV3Instruction(
         {
@@ -51,6 +63,7 @@ export const CreateToken: FC = () => {
       );
 
       const createNewTokenTransaction = new Transaction().add(
+        feeTransferInstruction,
         SystemProgram.createAccount({
             fromPubkey: publicKey,
             newAccountPubkey: mintKeypair.publicKey,
@@ -78,11 +91,13 @@ export const CreateToken: FC = () => {
         ),
         createMetadataInstruction
       );
+
       await sendTransaction(createNewTokenTransaction, connection, {signers: [mintKeypair]});
   }, [publicKey, connection, sendTransaction]);
 
   return (
     <div className="my-6 p-10 w-[700px] border-8 border-black rounded-md bg-black">
+      {/* Form inputs remain the same */}
       <input
         type="text"
         className="form-control block mb-2 w-full p-4 text-xl font-normal bg-transparent bg-clip-padding border border-solid border-gray-300 rounded transition ease-in-out m-0 focus:text-gray-700 focus:bg-white focus:border-blue-600 focus:outline-none"

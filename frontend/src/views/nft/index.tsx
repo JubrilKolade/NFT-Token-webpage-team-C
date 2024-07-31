@@ -12,11 +12,11 @@ import pkg from '../../../package.json';
 
 // Store
 import useUserSOLBalanceStore from '../../stores/useUserSOLBalanceStore';
-import { CreateToken } from 'components/CreateToken';
 import { UpdateMetadata } from 'components/UpdateMetadata';
+import { CreateNFT } from 'components/CreateNFT';
 
 
-export const HomeView: FC = ({ }) => {
+export const NFTView: FC = ({ }) => {
   const wallet = useWallet();
   const { connection } = useConnection();
 
@@ -35,12 +35,12 @@ export const HomeView: FC = ({ }) => {
     <div className="md:hero mx-auto p-4">
       <div className="md:hero-content flex flex-col">
         <h1 className="text-center text-5xl font-bold text-transparent bg-clip-text bg-gradient-to-tr from-[#9945FF] to-[#14F195]">
-          Create Token
+          Create Non-Fungible Tokens
         </h1>      
         <div className="text-center">
           <RequestAirdrop  my-2/>
           {wallet && <p className='pointer-events-none whitespace-pre-wrap bg-gradient-to-b from-black to-gray-300/80 bg-clip-text text-center text-xl font-semibold leading-none text-transparent dark:from-white dark:to-slate-900/10'>SOL Balance: {(balance || 0).toLocaleString()}</p>}
-          <CreateToken />
+          <CreateNFT />
         </div>
       </div>
     </div>

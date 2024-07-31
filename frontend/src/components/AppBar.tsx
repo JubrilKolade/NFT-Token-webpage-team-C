@@ -45,7 +45,9 @@ export const AppBar: FC = (props) => {
               </a>
             </Link>
           </div>
+          <Link href={"/nft"}>Create NFTs</Link> 
           <Link href={"/trade"} >Trade</Link>
+          <Link href={"/tradingview"} >Trading View</Link>
         </div>
 
         <div className="flex">
