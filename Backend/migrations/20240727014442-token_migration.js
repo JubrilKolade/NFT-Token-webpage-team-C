@@ -47,6 +47,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true,
       },
+      metadata_url: {
+        type: Sequelize.STRING,
+        allowNull: true,
+      },
       token_immutable: {
         type: Sequelize.INTEGER,
         allowNull: false,

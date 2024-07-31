@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
             website_link: DataTypes.STRING,
             twitter_link: DataTypes.STRING,
             telegram_link: DataTypes.STRING,
+            metadata_url: DataTypes.STRING,
             discord_link: DataTypes.STRING,
             token_immutable: DataTypes.INTEGER,
             revoke_freeze_authority: DataTypes.INTEGER,

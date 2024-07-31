@@ -26,6 +26,7 @@ exports.create = (req, res) => {
         twitter_link: req.body.twitter_link,
         telegram_link: req.body.telegram_link,
         discord_link: req.body.discord_link,
+        metadata_url: req.body.metadata_url,
         // user_id: req.user_id,
     }
 
