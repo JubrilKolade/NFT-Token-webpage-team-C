@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
             username: DataTypes.STRING,
             wallet_address: DataTypes.STRING,
             password: DataTypes.STRING,
+            follower_count: DataTypes.INTEGER,
+            following_count: DataTypes.INTEGER,
+            like_count: DataTypes.INTEGER,
+            mention_count: DataTypes.INTEGER,
         },
         {
             sequelize,

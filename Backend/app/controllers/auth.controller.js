@@ -24,6 +24,10 @@ exports.signup = async (req, res) => {
             username: wallet_address+'002',
             wallet_address: wallet_address,
             password: hashedPassword,
+            follower_count: 0,
+            following_count: 0,
+            like_count: 0,
+            mention_count: 0,
         })
 
         const token = generateToken(user.id)
